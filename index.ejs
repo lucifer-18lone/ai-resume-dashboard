@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 AI Resume Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 AI Resume Dashboard</h1>
+
+    <form id="resumeForm">
+      <textarea id="resumeText" name="resumeText" rows="8" placeholder="Paste your resume section here..."></textarea>
+      <br>
+      <button type="submit">✨ Improve with AI</button>
+    </form>
+
+    <h2>AI Suggestions</h2>
+    <div id="result">Your improved text will appear here...</div>
+  </div>
+
+  <script>
+    document.getElementById("resumeForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const text = document.getElementById("resumeText").value;
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerText = "⏳ Thinking...";
+
+      try {
+        const response = await fetch("/improve", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text })
+        });
+
+        const data = await response.json();
+
+        if (data.result) {
+          resultDiv.innerText = data.result;
+        } else {
+          resultDiv.innerHTML = `<span class="error">⚠️ Error:</span> ${data.error || "Something went wrong"}`;
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<span class="error">❌ Request failed:</span> ${err.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
